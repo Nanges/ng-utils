@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild, OnChanges, Inject, Type, Optional, Injector } from '@angular/core';
 import { CdkPortal, TemplatePortal, Portal, ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { Observable, NEVER, BehaviorSubject, merge, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, distinctUntilChanged } from 'rxjs/operators';
 import { LOADING_COMPONENT, ERROR_COMPONENT, ERROR_DATA } from './tokens';
 
 @Component({
@@ -43,7 +43,7 @@ export class AsyncPortalComponent implements OnChanges {
                 map(() => this.successPortal),
                 catchError(e => of(this.makeErrorPortal(e)))
             )
-        );
+        ).pipe(distinctUntilChanged());
     }
 
     private makeErrorPortal(errorObj: any) {
